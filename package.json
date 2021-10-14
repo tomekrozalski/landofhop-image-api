@@ -24,7 +24,10 @@
     "fastify-multipart": "^5.0.2",
     "fastify-plugin": "^3.0.0",
     "fastify-sensible": "^3.1.0",
-    "sharp": "^0.29.1"
+    "isomorphic-unfetch": "^3.1.0",
+    "potrace": "^2.1.8",
+    "sharp": "^0.29.1",
+    "svgo": "^2.7.0"
   },
   "devDependencies": {
     "tap": "^15.0.9"

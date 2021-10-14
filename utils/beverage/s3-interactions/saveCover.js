@@ -5,56 +5,61 @@ const { getSize, getWidth } = require("../getSize");
 
 const s3 = new aws.S3({});
 
-module.exports = function saveCover({ coverPath, format, image, size }) {
+function saveCoverJpg(coverPath, image, size) {
   return new Promise((resolve, reject) => {
-    console.log({ format });
-
-    if (format === "jpg") {
-      sharp(image)
-        .jpeg({})
-        .resize(getWidth(size))
-        .toBuffer()
-        .then((data) =>
-          s3.upload(
-            {
-              Bucket: "land-of-hop-images",
-              Key: `${coverPath}/jpg/${getSize(size)}.jpg`,
-              Body: data,
-              ACL: "public-read",
-            },
-            (errors, data) => {
-              if (errors) {
-                reject(errors);
-              } else {
-                resolve(data);
-              }
+    sharp(image)
+      .jpeg({})
+      .resize(getWidth(size))
+      .toBuffer()
+      .then((data) =>
+        s3.upload(
+          {
+            Bucket: "land-of-hop-images",
+            Key: `${coverPath}/jpg/${getSize(size)}.jpg`,
+            Body: data,
+            CacheControl: "max-age=31536000",
+            ACL: "public-read",
+          },
+          (errors, data) => {
+            if (errors) {
+              reject(errors);
+            } else {
+              resolve(data);
             }
-          )
-        );
-    }
-
-    if (format === "webp") {
-      sharp(image)
-        .webp({})
-        .resize(getWidth(size))
-        .toBuffer()
-        .then((data) =>
-          s3.upload(
-            {
-              Bucket: "land-of-hop-images",
-              Key: `${coverPath}/webp/${getSize(size)}.webp`,
-              Body: data,
-              ACL: "public-read",
-            },
-            (errors, data) => {
-              if (errors) {
-                reject(errors);
-              } else {
-                resolve(data);
-              }
-            }
-          )
-        );
-    }
+          }
+        )
+      );
   });
+}
+
+function saveCoverWebp(coverPath, image, size) {
+  return new Promise((resolve, reject) => {
+    sharp(image)
+      .webp({})
+      .resize(getWidth(size))
+      .toBuffer()
+      .then((data) =>
+        s3.upload(
+          {
+            Bucket: "land-of-hop-images",
+            Key: `${coverPath}/webp/${getSize(size)}.webp`,
+            Body: data,
+            CacheControl: "max-age=31536000",
+            ACL: "public-read",
+          },
+          (errors, data) => {
+            if (errors) {
+              reject(errors);
+            } else {
+              resolve(data);
+            }
+          }
+        )
+      );
+  });
+}
+
+module.exports = {
+  saveCoverJpg,
+  saveCoverWebp,
 };

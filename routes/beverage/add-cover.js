@@ -1,55 +1,31 @@
 const sizeOf = require("buffer-image-size");
-const saveCover = require("../../utils/beverage/s3-interactions/saveCover");
+const {
+  saveCoverJpg,
+  saveCoverWebp,
+} = require("../../utils/beverage/s3-interactions/saveCover");
+const getTracedSVG = require("../../utils/beverage/s3-interactions/getTracedSVG");
 
 module.exports = async function (fastify, opts) {
   fastify.post("/add-cover", async function (req, reply) {
     const data = await req.file();
     const image = await data.toBuffer();
-    const { badge, brand, shortId } = data.fields;
-    const coverPath = `${brand.value}/${badge.value}/${shortId.value}/cover`;
+    const path = req.headers.path;
+    const coverPath = `${path}/cover`;
 
     try {
       await Promise.all([
-        saveCover({
-          coverPath,
-          format: "webp",
-          image,
-          size: "large",
-        }),
-        saveCover({
-          coverPath,
-          format: "webp",
-          image,
-          size: "big",
-        }),
-        saveCover({
-          coverPath,
-          format: "webp",
-          image,
-          size: "small",
-        }),
-        saveCover({
-          coverPath,
-          format: "jpg",
-          image,
-          size: "large",
-        }),
-        saveCover({
-          coverPath,
-          format: "jpg",
-          image,
-          size: "big",
-        }),
-        saveCover({
-          coverPath,
-          format: "jpg",
-          image,
-          size: "small",
-        }),
+        saveCoverWebp(coverPath, image, "large"),
+        saveCoverWebp(coverPath, image, "big"),
+        saveCoverWebp(coverPath, image, "small"),
+        saveCoverJpg(coverPath, image, "large"),
+        saveCoverJpg(coverPath, image, "big"),
+        saveCoverJpg(coverPath, image, "small"),
       ]);
 
+      const outlines = await getTracedSVG(image);
       const { height, width } = sizeOf(image);
-      reply.send({ height, width });
+
+      reply.send({ height, outlines, width });
     } catch (err) {
       console.error(err);
     }
