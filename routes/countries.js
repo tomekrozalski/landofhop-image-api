@@ -4,6 +4,9 @@ module.exports = async function (fastify, opts) {
   fastify.get("/countries/:lang", async function (req, reply) {
     const { lang } = req.params;
 
+    console.log("test");
+    console.log({ lang });
+
     switch (lang) {
       case "pl":
         countries.registerLocale(require("i18n-iso-countries/langs/pl.json"));

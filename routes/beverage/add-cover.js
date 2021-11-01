@@ -3,7 +3,7 @@ const {
   saveCoverJpg,
   saveCoverWebp,
 } = require("../../utils/beverage/s3-interactions/saveCover");
-const getTracedSVG = require("../../utils/beverage/s3-interactions/getTracedSVG");
+const getTracedSVG = require("../../utils/beverage/s3-interactions/getTracedSvg");
 
 module.exports = async function (fastify, opts) {
   fastify.post("/add-cover", async function (req, reply) {
