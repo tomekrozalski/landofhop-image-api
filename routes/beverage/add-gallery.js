@@ -2,8 +2,8 @@ const {
   saveGalleryJpg,
   saveGalleryWebp,
 } = require("../../utils/beverage/s3-interactions/saveGallery");
-const getTracedSVG = require("../../utils/beverage/s3-interactions/getTracedSVG.js");
-const removeGallery = require("../../utils/beverage/s3-interactions/removeGallery.js");
+const getTracedSVG = require("../../utils/beverage/s3-interactions/getTracedSvg");
+const removeGallery = require("../../utils/beverage/s3-interactions/removeGallery");
 
 module.exports = async function (fastify, opts) {
   fastify.post("/add-gallery", async function (req, reply) {
